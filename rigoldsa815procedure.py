@@ -41,13 +41,13 @@ class DSA815Procedure(Procedure):
             if self.should_stop():
                 log.warning("Received stop request")
                 break
-def shutdown(self): 
+    def shutdown(self): 
         pass
 class ManagedWindow(ManagedWindow):
     def __init__(self): 
-        super().__init__(procedure_class = Keithley2100Procedure, 
-            inputs = ['wait_time'], 
-            displays = ['wait_time', 'voltage'], 
+        super().__init__(procedure_class = DSA815Procedure, 
+            inputs = ['start_freq', 'center_freq', 'stop_freq', 'sweep_time', 'data_points'], 
+            displays = ['start_freq', 'center_freq', 'stop_freq', 'sweep_time', 'data_points'], 
             x_axis = 'Frequency (Hz)', 
             y_axis = 'Amplitude (dBm)'
         )
