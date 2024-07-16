@@ -22,27 +22,34 @@ import time
 import c2 as cv2
 from time import sleep
 from pymeasure.log import console_log
-from pymeasure.instruments.keithley import Keithley2000
+from pymeasure.instruments.thorlabs import CS165MUM
 from pymeasure.display.windows import ManagedWindow
 from pymeasure.experiment import Results, Worker, Procedure, FloatParameter, IntegerParameter
 from pymeasure.display import Plotter
 
 
 class Keithley2100Procedure(Procedure):
-    visa = 'USB0::0x05E6::0x2100::1149087::INSTR' #must add visa address
-    wait_time = FloatParameter('Time', units = 's', default = 0.01)
-    log.info(f"Wait_time initialized to {wait_time}")
-
+    camera_visa = 0 #must add visa address
+    stage_visa = 
+    #wait_time = FloatParameter('Time', units = 's', default = 0.01)
+    log.info(f"Wait_time initialized to {visa}")
+    exposure_time = FloatParameter('Exposure Time', units = 's', default = 0.01)
     DATA_COLUMNS = ['Time(s)', 'Voltage(V)']
 
     def startup(self):
-        log.info("Starting up the Keithley 2100 powermeter...")
-        self.keithley = Keithley2000(self.visa) 
-        self.keithley.measure_voltage(0.01, ac = False)
-        sleep(self.wait_time) 
+        log.info("Starting up Thorlabs Color Camera...")
+        self.camera = CS165MUM(self.visa) 
+        image = self.camera.image_acquire()
+        sleep(0.01)
+        image_bgr = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) #convert array from RGB to BGR
+        cv2.imshow('image', image_bgr)
         
         #initialize the instrument
         log.info("Starting up the measurement...")
+
+        #focus 
+
+        stage = 
     def execute(self):
         time_0 = time.time()
         while True:
