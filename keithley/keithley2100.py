@@ -28,7 +28,7 @@ class Keithley2100Procedure(Procedure):
     def startup(self):
         log.info("Starting up the Keithley 2100 powermeter...")
         self.keithley = Keithley2000(self.visa) 
-        self.keithley.measure_voltage(0.01, ac = False)
+        self.keithley.measure_voltage(10, ac = False)
         sleep(self.wait_time) 
         
         #initialize the instrument
