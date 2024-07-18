@@ -112,11 +112,18 @@ class TestImageGUI(ManagedImageWindow):
         )
         self.setWindowTitle('PyMeasure Image Test')
 
+        self.filename = r'scan2d'   # Sets default filename
+        self.directory = r'/home/daichi/Documents/temp'            # Sets default directory
+        self.store_measurement = True                              # Controls the 'Save data' toggle
+        self.file_input.extensions = ["csv", "dat"]         # Sets recognized extensions, first entry is the default extension
+        self.file_input.filename_fixed = False                      # Controls whether the filename-field is frozen (but still displayed)
+
+
     def queue(self):
         direc = '.'
-        filename = unique_filename(direc, 'test')
+        # filename = unique_filename(direc, 'test')
         procedure = self.make_procedure()
-        results = Results(procedure, filename)
+        results = Results(procedure, self.filename)
         experiment = self.new_experiment(results)
         self.manager.queue(experiment)
 
