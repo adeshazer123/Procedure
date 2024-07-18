@@ -127,7 +127,7 @@ class TestImageGUI(ManagedImageWindow):
             # filename_input=False,
             # directory_input=False,
         )
-        self.setWindowTitle('PyMeasure Image Test')
+        self.setWindowTitle('Power Image Test')
 
         self.filename = r'xy_'   # Sets default filename
         self.directory = r'/home/daichi/Documents/temp'            # Sets default directory
