@@ -72,7 +72,7 @@ class SHRC203ImageProcedure(Procedure):
     # There must be two special data columns which correspond to the two things
     # which will act as coordinates for our image. If X and Y are changed
     # in the parameter names, their names must change in DATA_COLUMNS as well.
-    DATA_COLUMNS = ["X (um)", "Y (um)", "Power (W)"]
+    DATA_COLUMNS = ["X", "Y", "Power"]
 
     def startup(self):
         log.info("starting up OptoSigma SHRC203 stage...")
@@ -97,9 +97,9 @@ class SHRC203ImageProcedure(Procedure):
                 self.emit('progress', int(100 * progit / nprog))
                 progit += 1
                 self.emit("results", {
-                    'X (um)': x,
-                    'Y (um)': y,
-                    'Power (W)': self.pm100usb.power
+                    'X': x,
+                    'Y': y,
+                    'Power': self.pm100usb.power
                 })
                 sleep(self.delay)
                 if self.should_stop():
@@ -118,9 +118,9 @@ class TestImageGUI(ManagedImageWindow):
         # must be the DATA_COLUMNS corresponding to our special parameters.
         super().__init__(
             procedure_class=SHRC203ImageProcedure,
-            x_axis='X (um)',
-            y_axis='Y (um)',
-            z_axis='Power (W)',
+            x_axis='X',
+            y_axis='Y',
+            z_axis='Power',
             inputs=['X_start', 'X_end', 'X_step', 'Y_start', 'Y_end', 'Y_step',
                     'delay'],
             displays=['X_start', 'X_end', 'Y_start', 'Y_end', 'delay'],

@@ -43,7 +43,7 @@ from pymeasure.experiment import Procedure, FloatParameter, Results
 from pymeasure.display.Qt import QtWidgets
 
 from pymeasure.instruments.optosigma import SHRC203
-from pymeasure.instruments.thorlabs import ThorlabsPM100USB
+from pymeasure.instruments.keithley import Keithley2000
 
 from time import sleep
 
@@ -52,9 +52,9 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-class ThorlabsPM100USBImageProcedure(Procedure):
-    shrc203_visa = 'XXX:XXX:XXX' 
-    thorlabspm100usb_visa = 'USB0::0x05E6::0x2100::1149087::INSTR' 
+class Keithley2100ImageProcedure(Procedure):
+    shrc203_visa = 'USB0::0x05E6::0x2100::1149087::INSTR' #must add visa address
+    keithley2100_visa = 'USB0::0x05E6::0x2100::1149087::INSTR' 
 
     # We will be using X and Y as coordinates for our images. We must have
     # parameters called X_start, X_end and X_step and similarly for Y. X and
@@ -72,15 +72,15 @@ class ThorlabsPM100USBImageProcedure(Procedure):
     # There must be two special data columns which correspond to the two things
     # which will act as coordinates for our image. If X and Y are changed
     # in the parameter names, their names must change in DATA_COLUMNS as well.
-    DATA_COLUMNS = ["X", "Y", "Power"]
+    DATA_COLUMNS = ["X", "Y", "Voltage"]
 
     def startup(self):
         log.info("starting up OptoSigma SHRC203 stage...")
         self.shrc203 = SHRC203(self.shrc203_visa)
         
         log.info("starting up Thorlabs PM100USB powermeter...")
-        self.pm100usb = ThorlabsPM100USB(self.thorlabspm100usb_visa)
-        self.pm100usb.wavelength = self.wavelength
+        self.keithley2100 = Keithley2000(self.keithley2100_visa)
+        self.keithley.measure_voltage(10, ac = False)
 
     def execute(self):
         xs = np.arange(self.X_start, self.X_end, self.X_step)
@@ -99,7 +99,7 @@ class ThorlabsPM100USBImageProcedure(Procedure):
                 self.emit("results", {
                     'X': x,
                     'Y': y,
-                    'Power': self.pm100usb.power
+                    'Voltage': self.keithley.voltage
                 })
                 sleep(self.delay)
                 if self.should_stop():
@@ -117,17 +117,17 @@ class TestImageGUI(ManagedImageWindow):
         # Note the new z axis. This can be changed in the GUI. the X and Y axes
         # must be the DATA_COLUMNS corresponding to our special parameters.
         super().__init__(
-            procedure_class=ThorlabsPM100USBImageProcedure,
+            procedure_class=Keithley2100ImageProcedure,
             x_axis='X',
             y_axis='Y',
-            z_axis='Power',
+            z_axis='Voltage',
             inputs=['X_start', 'X_end', 'X_step', 'Y_start', 'Y_end', 'Y_step',
                     'delay'],
             displays=['X_start', 'X_end', 'Y_start', 'Y_end', 'delay'],
             # filename_input=False,
             # directory_input=False,
         )
-        self.setWindowTitle('Power Image Test')
+        self.setWindowTitle('Keithley 2100 Voltage Image Test')
 
         self.filename = r'xy_'   # Sets default filename
         self.directory = r'/home/daichi/Documents/temp'            # Sets default directory
