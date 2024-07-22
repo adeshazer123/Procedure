@@ -65,7 +65,8 @@ class Keithley2100Procedure(Procedure):
                 break 
     
     def shutdown(self): 
-        pass
+        self.kpz101.disconnect()
+
 class MainWindow(ManagedWindow):
     def __init__(self): 
         super().__init__(procedure_class = Keithley2100Procedure, 
