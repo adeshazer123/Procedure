@@ -21,16 +21,16 @@ from pymeasure.display import Plotter
 
 class Keithley2100Procedure(Procedure):
     visa = 'USB0::0x05E6::0x2100::1149087::INSTR' 
-    address = '29252556'
+    #address = '29252556'
     wait_time = FloatParameter('Time(s)', units = 's', default = 0.1)
     #voltage_stage = FloatParameter('Voltage (V):Stage', units = 'V', default = 0.0)
-    start_voltage = FloatParameter('Start Voltage', units = 'Hz', default = 0.0)
-    stop_voltage = FloatParameter('Stop Frequency', units = 'Hz', default = 750)
-    step_size = FloatParameter('Step Size', units = 'Hz', default = 0.266)
+    start_voltage = FloatParameter('Start Voltage', units = 'V', default = 0.0)
+    stop_voltage = FloatParameter('Stop Voltage', units = 'V', default = 75)
+    step_size = FloatParameter('Step Size', units = 'V', default = 0.266)
 
-    log.info(f"Wait_time initialized to {wait_time}")
-    log.info(f"Start frequency initialized to {start_voltage}")
-    log.info(f"Stop frequency initialized to {stop_voltage}")
+    # log.info(f"Wait_time initialized to {wait_time}")
+    log.info(f"Start voltage initialized to {start_voltage}")
+    log.info(f"Stop voltage initialized to {stop_voltage}")
     log.info(f"Step size initialized to {step_size}")
 
     DATA_COLUMNS = ['Voltage(V):Stage', 'Voltage(V)']
@@ -38,7 +38,7 @@ class Keithley2100Procedure(Procedure):
     def startup(self):
         log.info("Starting up the Keithley 2100 powermeter...")
         self.keithley = Keithley2000(self.visa) 
-        self.kpz101 = KPZ101(self.address)
+        self.kpz101 = KPZ101()
         self.keithley.measure_voltage(0.01, ac = False)
         self.kpz101.move_home()
         sleep(self.wait_time) 
@@ -46,13 +46,14 @@ class Keithley2100Procedure(Procedure):
         #initialize the instrument
         log.info("Starting up the measurement...")
     def execute(self):
-        voltages = np.arange(5, 75, 0.266)
+        voltages = np.arange(self.start_voltage, self.stop_voltage, self.step_size)
 
         for voltage in voltages: 
-            piezo_voltage = self.kpz101.set_voltage(voltage)
+            self.kpz101.set_voltage(voltage)
             self.keithley.start_buffer()
+            # piezo_voltage = self.kpz101.get_voltage
 
-            data = {'Voltage (V):Stage': piezo_voltage,
+            data = {'Voltage(V):Stage': voltage, #piezo_voltage,
                 'Voltage(V)': self.keithley.voltage
             }
             print(data)
@@ -70,8 +71,8 @@ class MainWindow(ManagedWindow):
         super().__init__(procedure_class = Keithley2100Procedure, 
             inputs = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'],
             displays = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'], 
-            x_axis = 'Voltage (V):Stage', 
-            y_axis = 'Voltage (V)'
+            x_axis = 'Voltage(V):Stage', 
+            y_axis = 'Voltage(V)'
         )
         self.setWindowTitle('Measure Interference')
 
