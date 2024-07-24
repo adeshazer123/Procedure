@@ -34,13 +34,13 @@ class SR830RefArmProcedure(Procedure):
 
     wait_time = FloatParameter("Time(s)", units="s", default=0.1)
     # voltage_stage = FloatParameter('Voltage (V):Stage', units = 'V', default = 0.0)
-    start_volt = FloatParameter("Start Voltage", units="Hz", default=0.0)
-    stop_volt = FloatParameter("Stop Voltage", units="Hz", default=750)
-    step_size = FloatParameter("Step Size", units="Hz", default=0.266)
+    start_voltage = FloatParameter('Start Voltage', units = 'V', default = 0.0)
+    stop_voltage = FloatParameter('Stop Voltage', units = 'V', default = 75)
+    step_size = FloatParameter('Step Size', units = 'V', default = 0.266)
 
     log.info(f"Wait_time initialized to {wait_time}")
-    log.info(f"Start voltage initialized to {start_volt}")
-    log.info(f"Stop voltage initialized to {stop_volt}")
+    log.info(f"Start voltage initialized to {start_voltage}")
+    log.info(f"Stop voltage initialized to {stop_voltage}")
     log.info(f"Step size initialized to {step_size}")
 
     DATA_COLUMNS = ["Voltage(V):Stage", "Voltage(V)"]
@@ -58,7 +58,7 @@ class SR830RefArmProcedure(Procedure):
         log.info("Starting up the measurement...")
 
     def execute(self):
-        voltages = np.arange(self.start_volt, self.stop_volt, self.step_size)
+        voltages = np.arange(self.start_voltage, self.stop_voltage, self.step_size)
 
         for voltage in voltages:
             piezo_voltage = self.kpz101.set_voltage(voltage)
@@ -80,16 +80,15 @@ class MainWindow(ManagedWindow):
     def __init__(self):
         super().__init__(
             procedure_class=SR830RefArmProcedure,
-            inputs = ['wait_time', 'start_volt', 'stop_volt', 'step_size'], 
-            displays = ['wait_time', 'start_volt', 'stop_volt', 'step_size',
-                        'voltage'], 
-            x_axis="Time (s)",
-            y_axis="Voltage (V)",
+            inputs = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'], 
+            displays = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'], 
+            x_axis = 'Voltage(V):Stage', 
+            y_axis = 'Voltage(V)'
         )
 
         self.setWindowTitle("SR830 Lock-In Amplifier Measurement with Reference Arm")
 
-        self.filename = r"xy_"  # Sets default filename
+        self.filename = r"V_refV_"  # Sets default filename
         self.directory = r"/home/daichi/Documents/temp"  # Sets default directory
         self.store_measurement = True  # Controls the 'Save data' toggle
         self.file_input.extensions = [
