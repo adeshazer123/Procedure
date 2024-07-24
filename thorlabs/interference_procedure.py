@@ -18,15 +18,16 @@ from pymeasure.display import Plotter
 class InterferenceProcedure(Procedure):
     visa = 'USB0::0x05E6::0x2100::1149087::INSTR' 
     address = '29252556'
+    
     wait_time = FloatParameter('Time(s)', units = 's', default = 0.1)
     #voltage_stage = FloatParameter('Voltage (V):Stage', units = 'V', default = 0.0)
-    start_freq = FloatParameter('Start Frequency', units = 'Hz', default = 0.0)
-    stop_freq = FloatParameter('Stop Frequency', units = 'Hz', default = 750)
+    start_volt = FloatParameter('Start Voltage', units = 'Hz', default = 0.0)
+    stop_volt = FloatParameter('Stop Voltage', units = 'Hz', default = 750)
     step_size = FloatParameter('Step Size', units = 'Hz', default = 0.266)
 
     log.info(f"Wait_time initialized to {wait_time}")
-    log.info(f"Start frequency initialized to {start_freq}")
-    log.info(f"Stop frequency initialized to {stop_freq}")
+    log.info(f"Start frequency initialized to {start_volt}")
+    log.info(f"Stop frequency initialized to {stop_volt}")
     log.info(f"Step size initialized to {step_size}")
 
     DATA_COLUMNS = ['Voltage(V):Stage', 'Voltage(V)']
@@ -64,8 +65,8 @@ class InterferenceProcedure(Procedure):
 class ManagedWindow(ManagedWindow):
     def __init__(self): 
         super().__init__(procedure_class = Keithley2100Procedure, 
-            inputs = ['wait_time', 'start_freq', 'stop_freq', 'step_size'] 
-            displays = ['wait_time', 'start_freq', 'stop_freq', 'step_size',
+            inputs = ['wait_time', 'start_volt', 'stop_volt', 'step_size'] 
+            displays = ['wait_time', 'start_volt', 'stop_volt', 'step_size',
                         'voltage'], 
             x_axis = 'Voltage (V):Stage', 
             y_axis = 'Voltage (V)'
