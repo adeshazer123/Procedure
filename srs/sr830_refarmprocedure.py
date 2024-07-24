@@ -39,7 +39,7 @@ class SR830RefArmProcedure(Procedure):
 
     def startup(self):
         log.info("Starting up the piezostage and lock-in amplifier...")
-        self.kpz101 = KPZ101(self.address)
+        self.kpz101 = KPZ101(self.stage_address)
         self.lockin = SR830(self.lockin_visa)
         self.lockin.frequency = self.frequency
         self.lockin.time_constant = self.time_constant / 1e3  # Convert ms to s
@@ -93,7 +93,7 @@ class MainWindow(ManagedWindow):
         self.setWindowTitle("SR830 Lock-In Amplifier Measurement with Reference Arm")
 
         self.filename = r"V_refV_"  # Sets default filename
-        self.directory = r"/home/daichi/Documents/temp"  # Sets default directory
+        self.directory = r"c:\Users\DK-microscope\Documents\temp"  # Sets default directory
         self.store_measurement = True  # Controls the 'Save data' toggle
         self.file_input.extensions = [
             "csv",
