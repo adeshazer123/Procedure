@@ -5,7 +5,7 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 import pandas as pd 
-from numpy import np
+import numpy as np
 from time import sleep
 from pymeasure.log import console_log
 from pymeasure.instruments.keithley import Keithley2000
@@ -43,7 +43,7 @@ class InterferenceProcedure(Procedure):
         #initialize the instrument
         log.info("Starting up the measurement...")
     def execute(self):
-        voltages = np.arange(5, 75, 0.266)
+        voltages = np.arange(self.start_volt, self.stop_volt, self.step_size)
 
         for voltage in voltages: 
             piezo_voltage = self.kpz101.set_voltage(voltage)
@@ -65,7 +65,7 @@ class InterferenceProcedure(Procedure):
 class ManagedWindow(ManagedWindow):
     def __init__(self): 
         super().__init__(procedure_class = Keithley2100Procedure, 
-            inputs = ['wait_time', 'start_volt', 'stop_volt', 'step_size'] 
+            inputs = ['wait_time', 'start_volt', 'stop_volt', 'step_size'], 
             displays = ['wait_time', 'start_volt', 'stop_volt', 'step_size',
                         'voltage'], 
             x_axis = 'Voltage (V):Stage', 
