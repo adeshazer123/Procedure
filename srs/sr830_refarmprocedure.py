@@ -27,13 +27,12 @@ log.addHandler(logging.NullHandler())
 
 
 class SR830RefArmProcedure(Procedure):
-    lockin_visa = "GPIB::8"  # Adjust the address as necessary
+    lockin_visa = "GPIB0::1::INSTR"  # Adjust the address as necessary
     stage_address = "29252556"
 
     frequency = FloatParameter("Frequency (Hz)", default=1e3)
 
     wait_time = FloatParameter("Time(s)", units="s", default=0.1)
-    # voltage_stage = FloatParameter('Voltage (V):Stage', units = 'V', default = 0.0)
     start_voltage = FloatParameter('Start Voltage', units = 'V', default = 0.0)
     stop_voltage = FloatParameter('Stop Voltage', units = 'V', default = 75)
     step_size = FloatParameter('Step Size', units = 'V', default = 0.266)
@@ -80,8 +79,8 @@ class MainWindow(ManagedWindow):
     def __init__(self):
         super().__init__(
             procedure_class=SR830RefArmProcedure,
-            inputs = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'], 
-            displays = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size'], 
+            inputs = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size', 'frequency'], 
+            displays = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size', 'frequency'], 
             x_axis = 'Voltage(V):Stage', 
             y_axis = 'Voltage(V)'
         )
