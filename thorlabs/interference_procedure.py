@@ -23,7 +23,6 @@ class InterferenceProcedure(Procedure):
     visa = 'USB0::0x05E6::0x2100::1149087::INSTR' 
     #address = '29252556'
     wait_time = FloatParameter('Time(s)', units = 's', default = 0.1)
-    #voltage_stage = FloatParameter('Voltage (V):Stage', units = 'V', default = 0.0)
     start_voltage = FloatParameter('Start Voltage', units = 'V', default = 0.0)
     stop_voltage = FloatParameter('Stop Voltage', units = 'V', default = 75)
     step_size = FloatParameter('Step Size', units = 'V', default = 0.266)

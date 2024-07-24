@@ -1,6 +1,4 @@
-import time
 import sys
-
 import logging
 
 log = logging.getLogger(__name__)
@@ -20,11 +18,6 @@ from pymeasure.display.windows import ManagedWindow
 from pymeasure.experiment import unique_filename
 from pymeasure.display.Qt import QtWidgets
 
-import logging
-
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
-
 
 class SR830RefArmProcedure(Procedure):
     lockin_visa = "GPIB0::1::INSTR"  # Adjust the address as necessary
@@ -33,16 +26,16 @@ class SR830RefArmProcedure(Procedure):
     frequency = FloatParameter("Frequency (Hz)", default=1e3)
 
     wait_time = FloatParameter("Time(s)", units="s", default=0.1)
-    start_voltage = FloatParameter('Start Voltage', units = 'V', default = 0.0)
-    stop_voltage = FloatParameter('Stop Voltage', units = 'V', default = 75)
-    step_size = FloatParameter('Step Size', units = 'V', default = 0.266)
+    start_voltage = FloatParameter("Start Voltage", units="V", default=0.0)
+    stop_voltage = FloatParameter("Stop Voltage", units="V", default=75)
+    step_size = FloatParameter("Step Size", units="V", default=0.266)
 
     log.info(f"Wait_time initialized to {wait_time}")
     log.info(f"Start voltage initialized to {start_voltage}")
     log.info(f"Stop voltage initialized to {stop_voltage}")
     log.info(f"Step size initialized to {step_size}")
 
-    DATA_COLUMNS = ["Voltage(V):Stage", "Voltage(V)"]
+    DATA_COLUMNS = ["Reference_Voltage(V)", "Voltage(V)"]
 
     def startup(self):
         log.info("Starting up the piezostage and lock-in amplifier...")
@@ -65,7 +58,7 @@ class SR830RefArmProcedure(Procedure):
             y = self.lockin.y
             voltage = np.sqrt(x**2 + y**2)
 
-            data = {"Voltage (V):Stage": piezo_voltage, "Voltage (V)": voltage}
+            data = {"Reference_Voltage(V)": piezo_voltage, "Voltage(V)": voltage}
 
             self.emit("results", data)
             sleep(self.wait_time)
@@ -79,10 +72,22 @@ class MainWindow(ManagedWindow):
     def __init__(self):
         super().__init__(
             procedure_class=SR830RefArmProcedure,
-            inputs = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size', 'frequency'], 
-            displays = ['wait_time', 'start_voltage', 'stop_voltage', 'step_size', 'frequency'], 
-            x_axis = 'Voltage(V):Stage', 
-            y_axis = 'Voltage(V)'
+            inputs=[
+                "wait_time",
+                "start_voltage",
+                "stop_voltage",
+                "step_size",
+                "frequency",
+            ],
+            displays=[
+                "wait_time",
+                "start_voltage",
+                "stop_voltage",
+                "step_size",
+                "frequency",
+            ],
+            x_axis="Reference_Voltage(V)",
+            y_axis="Voltage(V)",
         )
 
         self.setWindowTitle("SR830 Lock-In Amplifier Measurement with Reference Arm")
