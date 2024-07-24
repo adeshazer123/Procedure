@@ -26,8 +26,8 @@ class InterferenceProcedure(Procedure):
     step_size = FloatParameter('Step Size', units = 'Hz', default = 0.266)
 
     log.info(f"Wait_time initialized to {wait_time}")
-    log.info(f"Start frequency initialized to {start_volt}")
-    log.info(f"Stop frequency initialized to {stop_volt}")
+    log.info(f"Start voltage initialized to {start_volt}")
+    log.info(f"Stop voltage initialized to {stop_volt}")
     log.info(f"Step size initialized to {step_size}")
 
     DATA_COLUMNS = ['Voltage(V):Stage', 'Voltage(V)']
