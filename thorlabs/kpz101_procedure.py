@@ -40,6 +40,7 @@ class Keithley2100Procedure(Procedure):
         self.keithley = Keithley2000(self.visa) 
         self.kpz101 = KPZ101()
         self.keithley.measure_voltage(0.01, ac = False)
+        self.keithley.enable_filter(count=10)
         self.kpz101.move_home()
         sleep(self.wait_time) 
         
