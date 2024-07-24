@@ -31,7 +31,7 @@ class SR830Procedure(Procedure):
 
     def startup(self):
         self.lockin = SR830(self.lockin_visa)
-        self.lpkin.frequency = self.frequency
+        self.lockin.frequency = self.frequency
         self.lockin.time_constant = self.time_constant / 1e3  # Convert ms to s
 
     def execute(self):
