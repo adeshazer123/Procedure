@@ -29,6 +29,7 @@ class SR830RefArmProcedure(Procedure):
     start_voltage = FloatParameter("Start Voltage", units="V", default=0.0)
     stop_voltage = FloatParameter("Stop Voltage", units="V", default=75)
     step_size = FloatParameter("Step Size", units="V", default=0.266)
+    time_constant = FloatParameter("Time Constant", units="s", default=0.1)
 
     log.info(f"Wait_time initialized to {wait_time}")
     log.info(f"Start voltage initialized to {start_voltage}")
@@ -39,10 +40,10 @@ class SR830RefArmProcedure(Procedure):
 
     def startup(self):
         log.info("Starting up the piezostage and lock-in amplifier...")
-        self.kpz101 = KPZ101(self.stage_address)
+        self.kpz101 = KPZ101()
         self.lockin = SR830(self.lockin_visa)
         self.lockin.frequency = self.frequency
-        self.lockin.time_constant = self.time_constant / 1e3  # Convert ms to s
+        # self.lockin.time_constant = self.time_constant / 1e3  # Convert ms to s
         self.kpz101.move_home()
         sleep(self.wait_time)
 
@@ -53,12 +54,13 @@ class SR830RefArmProcedure(Procedure):
         voltages = np.arange(self.start_voltage, self.stop_voltage, self.step_size)
 
         for voltage in voltages:
-            piezo_voltage = self.kpz101.set_voltage(voltage)
+            self.kpz101.set_voltage(voltage)
             x = self.lockin.x
             y = self.lockin.y
-            voltage = np.sqrt(x**2 + y**2)
+            sr830_voltage = np.sqrt(x**2 + y**2)
 
-            data = {"Reference_Voltage(V)": piezo_voltage, "Voltage(V)": voltage}
+            data = {"Reference_Voltage(V)": voltage, "Voltage(V)": sr830_voltage}
+            print(data)  # prints the data
 
             self.emit("results", data)
             sleep(self.wait_time)
@@ -66,6 +68,9 @@ class SR830RefArmProcedure(Procedure):
             if self.should_stop():
                 log.info("Stopping...")
                 break
+
+    def shutdown(self):
+        self.kpz101.disconnect()
 
 
 class MainWindow(ManagedWindow):
@@ -78,6 +83,7 @@ class MainWindow(ManagedWindow):
                 "stop_voltage",
                 "step_size",
                 "frequency",
+                "time_constant",
             ],
             displays=[
                 "wait_time",
@@ -93,7 +99,9 @@ class MainWindow(ManagedWindow):
         self.setWindowTitle("SR830 Lock-In Amplifier Measurement with Reference Arm")
 
         self.filename = r"V_refV_"  # Sets default filename
-        self.directory = r"c:\Users\DK-microscope\Documents\temp"  # Sets default directory
+        self.directory = (
+            r"c:\Users\DK-microscope\Documents\temp"  # Sets default directory
+        )
         self.store_measurement = True  # Controls the 'Save data' toggle
         self.file_input.extensions = [
             "csv",
