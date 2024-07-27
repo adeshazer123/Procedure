@@ -1,0 +1,8 @@
+#Procedure: <__main__.Keithley2100Procedure>
+#Parameters:
+#	Start Frequency: 0 Hz
+#	Step Size: 0.266 Hz
+#	Stop Frequency: 750 Hz
+#	Time(s): 0.1 s
+#Data:
+Voltage(V):Stage,Voltage(V)

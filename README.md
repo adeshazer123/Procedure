@@ -1,2 +1,2 @@
 # Procedure
- Sets up procedures for instruments
+ Sets up procedures for Pymeasure instruments
